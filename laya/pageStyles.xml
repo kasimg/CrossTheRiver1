@@ -1,4 +1,5 @@
 <page>
    <item name="BackGround.scene" props="" ifExport="内嵌模式" aName=""/>
    <item name="gameOver.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="succeed.scene" props="" ifExport="内嵌模式" aName=""/>
 </page>

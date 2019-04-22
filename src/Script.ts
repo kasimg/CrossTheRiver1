@@ -4,11 +4,14 @@ import Boat from './Boat';
 import StaticData from './StaticData';
 import RiverBank from './RiverBank';
 import GameOver from './GameOver';
+import Succeed from './Succeed';
 
 export default class Script extends ui.BackGroundUI {
   private items: Array<Item>;
   private boat: Boat = new Boat(this.boatSprite);
   private riverBanks: Array<RiverBank>;
+
+  private clickCount = 0;  //  控制箭头的方向
 
   constructor() {
     super();
@@ -26,9 +29,9 @@ export default class Script extends ui.BackGroundUI {
     ];
 
     this.items = new Array<Item>();
-    this.items.push(new Item(this.wolf, 'wolfPos', this.boat, this.riverBanks));
-    this.items.push(new Item(this.sheep, 'sheepPos', this.boat, this.riverBanks));
-    this.items.push(new Item(this.cabbage, 'cabbagePos', this.boat, this.riverBanks));
+    this.items.push(new Item(this.wolf, 'wolfPos', this.boat, this.riverBanks, Laya.Handler.create(this, this.succeed)));
+    this.items.push(new Item(this.sheep, 'sheepPos', this.boat, this.riverBanks, Laya.Handler.create(this, this.succeed)));
+    this.items.push(new Item(this.cabbage, 'cabbagePos', this.boat, this.riverBanks, Laya.Handler.create(this, this.succeed)));
   }
 
   //  绑定GO点击事件
@@ -40,6 +43,9 @@ export default class Script extends ui.BackGroundUI {
   gogogo(): void {
     //  隐藏鼠标
     Laya.Mouse.hide();
+    //  翻转箭头
+    this.clickCount += 1;
+    this.go.rotation = 180 * this.clickCount;
     //  显示运输信息
     this.showMessage();
     // 确定要判断那边岸的情况
@@ -49,7 +55,7 @@ export default class Script extends ui.BackGroundUI {
 
     
     const eatArr = this.riverBanks[bankIndex].EatOrNot();
-    
+    console.log('start moving boat');
     if (eatArr) {  //  如果发生了吃事件
       const eator = this.items[eatArr[0]];
       const food = this.items[eatArr[1]]
@@ -67,14 +73,16 @@ export default class Script extends ui.BackGroundUI {
 
   //  初始化信息格式
   initMessage(): void {
-    StaticData.message.fontSize = 50;
+    StaticData.message.fontSize = 15;
+    StaticData.message.x = 9;
+    StaticData.message.y = 228;
     this.addChild(StaticData.message);
   }
 
   //  显示运输信息
   showMessage(): void {
     const passage = this.boat.getPassage();
-    let passageName = StaticData[passage.getTypeStr()].name;  //  获取乘客名称
+    let passageName = passage ?  StaticData[passage.getTypeStr()].name : '空气';  //  获取乘客名称
     //  获取起点和终点信息
     let startPoint = '右岸';
     let endPoint = '左岸';
@@ -158,6 +166,12 @@ export default class Script extends ui.BackGroundUI {
     Laya.stage.addChild(gameOver);
   }
 
+  //  游戏胜利
+  succeed(): void {
+    const succeed = new Succeed(Laya.Handler.create(this, this.reset));
+    Laya.stage.addChild(succeed);
+  }
+
   //  重置游戏
   reset(): void {
     //  重置狼羊草的位置,显示被吃掉的item,重置旋转角度
@@ -174,5 +188,8 @@ export default class Script extends ui.BackGroundUI {
     //  重置河岸信息
     this.riverBanks[0].resetBankArr(true);
     this.riverBanks[1].resetBankArr(false);
+
+    //  清空显示信息
+    StaticData.message.text = '';
   }
 }

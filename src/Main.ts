@@ -13,6 +13,7 @@ class Main {
 		const resArray = [
 			{url: 'res/atlas/actors.atlas', type: Laya.Loader.ATLAS},
 			{url: 'actors/gameover.jpg'},
+			{url: 'actors/succeed.jpg'},
 		];
 
 		//  加载图像

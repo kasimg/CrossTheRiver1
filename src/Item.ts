@@ -12,12 +12,15 @@ export default class Item {
 
   private riverBanks: Array<RiverBank>;
 
-  constructor(img: Sprite, typeStr: string, boat: Boat, riverBanks: Array<RiverBank>) {
+  private succeed: Laya.Handler;
+
+  constructor(img: Sprite, typeStr: string, boat: Boat, riverBanks: Array<RiverBank>, succeed: Laya.Handler) {
     this.img = img;
     this.bindClickEvent();
     this.typeStr = typeStr;
     this.boat = boat;
     this.riverBanks = riverBanks;
+    this.succeed = succeed;
   }
 
   //  绑定点击事件
@@ -95,16 +98,20 @@ export default class Item {
         },
         1000,
         Laya.Ease.backInOut,
+
         //  判断是否成功
         Laya.Handler.create(this, () => {
           if (this.riverBanks[1].succeed()) {
-            console.log('succeed');
+            // console.log('succeed');
+            this.succeed.run();
           }
         }),
       );
     }
 
   }
+
+  //  判断是否成功
 
   //  游戏判定失败后的吃的动作
   eat(food : Item): void {
@@ -134,6 +141,7 @@ export default class Item {
     return this.img;
   }
 
+  //  显示信息
   showMessage(): void {
     const pos = this.boat.getSprite().x === StaticData.boat.left.x ? '左岸' : '右岸';
     const action = this.boat.empty() ? '上船' : '下船';
