@@ -10,6 +10,12 @@ export default class Boat {
     this.img = img;
   }
 
+  //  设置船的坐标
+  public setPos({x, y}): void {
+    this.img.x = x;
+    this.img.y = y;
+  }
+
   //  添加乘客
   public addPassage(passage: Item): void {
     this.passage = passage;
@@ -40,19 +46,25 @@ export default class Boat {
   public moveBoat(succeed: boolean = true): any {
     let boatPos: {};
     let passagePos: {};
+
+    let delFlag = 1;
+
     //  确定移动的方向
     if (this.img.x === StaticData.boat.left.x) {
-      boatPos = StaticData.boat.right;
-      passagePos = StaticData.rightRiverBankPos;
+      boatPos = Object.create(StaticData.boat.right);
+      passagePos = Object.create(StaticData.rightRiverBankPos);
     } else {
-      boatPos = StaticData.boat.left;
-      passagePos = StaticData.leftRiverBankPos;
+      // console.log('向左走');
+      boatPos = Object.create(StaticData.boat.left);
+      passagePos = Object.create(StaticData.leftRiverBankPos);
+      delFlag = -1;
     }
+    
 
     //  确定移动的距离
     if (!succeed) {
-      boatPos['x'] -= 150;
-      passagePos['x'] -= 150;
+      boatPos['x'] -= 150 * delFlag;
+      passagePos['x'] -= 150 * delFlag;
     }
 
     return {

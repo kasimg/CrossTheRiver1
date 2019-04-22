@@ -9,6 +9,7 @@ export default {
       y: 164,
     },
     index: 2,
+    name: '卷心菜',
   },
 
   sheepPos: {
@@ -20,7 +21,8 @@ export default {
       x: 970,
       y: 164,
     },
-    index: 1
+    index: 1,
+    name: '羊',
   },
 
   wolfPos: {
@@ -33,6 +35,7 @@ export default {
       y: 164,
     },
     index: 0,
+    name: '狼',
   },
 
   leftRiverBankPos: {
@@ -63,4 +66,6 @@ export default {
     LEFT_BANK: 0,
     RIGHT_BANK: 1,
   },
+
+  message: new Laya.Text(),
 }

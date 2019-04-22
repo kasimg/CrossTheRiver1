@@ -8,10 +8,11 @@ class Main {
 	
 	//  初始化游戏界面
 	initUI(): void {
-		Laya.init(1336, 700);
+		Laya.init(1280, 720);
 		Laya.stage.bgColor = '#ffffff';
 		const resArray = [
 			{url: 'res/atlas/actors.atlas', type: Laya.Loader.ATLAS},
+			{url: 'actors/gameover.jpg'},
 		];
 
 		//  加载图像

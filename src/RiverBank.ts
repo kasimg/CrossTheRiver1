@@ -7,6 +7,9 @@ export default class RiverBank {
     this.items = originState;  //  设置初始状态
   }
 
+  public resetBankArr(left: boolean):void {
+    this.items = left ? [1, 1, 1] : [0, 0, 0];
+  }
   //  有item上岸
   public getIn(index : number) : void {
     this.items[index] = 1;
@@ -23,5 +26,11 @@ export default class RiverBank {
     if (this.items[StaticData.wolfPos.index] + this.items[StaticData.sheepPos.index] === 2) return [StaticData.wolfPos.index, StaticData.sheepPos.index];
     if (this.items[StaticData.sheepPos.index] + this.items[StaticData.cabbagePos.index] === 2) return [StaticData.sheepPos.index, StaticData.cabbagePos.index];
     return null;
+  }
+
+  //  判断时候游戏胜利
+  public succeed(): boolean {
+    if (eval(this.items.join("+")) === 3) return true;
+    return false;
   }
 }

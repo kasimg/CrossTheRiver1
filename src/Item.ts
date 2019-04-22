@@ -25,6 +25,17 @@ export default class Item {
     this.img.on(Laya.Event.MOUSE_DOWN, this, this.jump);
   }
 
+  //  设置图片坐标
+  public setPos({x, y}): void {
+    this.img.x = x;
+    this.img.y = y;
+  }
+
+  //  设置riverbanks，方便重置
+  public setRiverBanks(riverBanks: Array<RiverBank>):void {
+    this.riverBanks = riverBanks;
+  }
+
   //  从往船上跳
   jump(): void {
     let posX: number;
@@ -33,6 +44,9 @@ export default class Item {
     let rollFlag: number = 1;  //  控制旋转
 
     let canJump: boolean = true;  //  控制是否能跳
+
+    //  显示信息
+    this.showMessage();
 
     //  先判断往哪里跳
     if (this.img.x < StaticData.leftRiverBankPos.x) {  //  此时是从左岸向船上跳
@@ -44,6 +58,8 @@ export default class Item {
       } else {
         this.boat.addPassage(this);
         this.riverBanks[StaticData.index.LEFT_BANK].getOut(StaticData[this.typeStr].index);
+        // console.log('跳跃之后的riverbank', this.riverBanks);
+        
       }
     } else if (this.img.x === StaticData.leftRiverBankPos.x) {  //  此时是从船上向左岸跳
       posX = StaticData[this.typeStr].left.x;
@@ -54,7 +70,7 @@ export default class Item {
     } else if (this.img.x === StaticData.rightRiverBankPos.x) {  //  此时是从船上向右岸跳
       posX = StaticData[this.typeStr].right.x;
       posY = StaticData[this.typeStr].right.y;
-      rollFlag = 0;
+      rollFlag = -1;
       this.boat.removePassage();
       this.riverBanks[StaticData.index.RIGHT_BANK].getIn(StaticData[this.typeStr].index);
     } else {  //  此时是从右岸往船上跳
@@ -77,8 +93,14 @@ export default class Item {
           y: posY,
           rotation: 360 * rollFlag,
         },
-        2000,
+        1000,
         Laya.Ease.backInOut,
+        //  判断是否成功
+        Laya.Handler.create(this, () => {
+          if (this.riverBanks[1].succeed()) {
+            console.log('succeed');
+          }
+        }),
       );
     }
 
@@ -102,11 +124,6 @@ export default class Item {
 
   }
 
-  //  被吃
-  getEaten(): void {
-
-  }
-
   //  获取类型码
   public getTypeStr(): string {
     return this.typeStr;
@@ -115,6 +132,13 @@ export default class Item {
   //  获取图片对象（精灵）
   public getSprite(): Laya.Sprite {
     return this.img;
+  }
+
+  showMessage(): void {
+    const pos = this.boat.getSprite().x === StaticData.boat.left.x ? '左岸' : '右岸';
+    const action = this.boat.empty() ? '上船' : '下船';
+    const message = StaticData[this.typeStr].name + '从' + pos + action;
+    StaticData.message.text += message + '\n';
   }
 
 }
